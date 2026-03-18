@@ -278,6 +278,35 @@
     #tj-chat-send:disabled { opacity: .4; cursor: not-allowed; transform: none; }
     #tj-chat-send svg { width: 18px; height: 18px; fill: #fff; }
 
+    /* ── Link buttons inside bubbles ── */
+    .tj-link-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, #111 0%, #ff5c00 100%);
+      color: #fff !important; text-decoration: none;
+      padding: 9px 18px; border-radius: 22px;
+      font-size: 13px; font-weight: 600; font-family: inherit;
+      margin: 8px 4px 2px 0; border: none; cursor: pointer;
+      box-shadow: 0 3px 10px rgba(255,92,0,.35);
+      transition: opacity .15s, transform .15s;
+      vertical-align: middle; line-height: 1;
+    }
+    .tj-link-btn:hover { opacity: .88; transform: translateY(-1px); }
+
+    /* ── Calendly inline embed ── */
+    .tj-calendly-wrap {
+      width: 100%; margin-top: 10px;
+      border-radius: 14px; overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,.12);
+      border: 1px solid #E2E8F0;
+      animation: tj-fadein .3s ease both;
+    }
+    .tj-calendly-wrap iframe {
+      width: 100%; height: 650px; border: none; display: block;
+    }
+    @media (max-width: 639px) {
+      .tj-calendly-wrap iframe { height: 540px; }
+    }
+
     /* ── Footer ── */
     #tj-chat-footer {
       text-align: center; padding: 7px 14px 8px;
@@ -464,6 +493,52 @@
     });
   }
 
+  // ── Render text: escape HTML + convert [label](url) markdown to buttons ──────
+  function renderText(raw) {
+    var mdLink = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
+    var result = "";
+    var last = 0;
+    var match;
+    while ((match = mdLink.exec(raw)) !== null) {
+      // plain text segment before this link
+      result += escapeHtml(raw.slice(last, match.index)).replace(/\n/g, "<br>");
+      var label = match[1];
+      var url   = match[2];
+      var isCalendly = url.indexOf("calendly.com") !== -1;
+      result += '<a class="tj-link-btn"'
+        + (isCalendly ? ' data-calendly="' + escapeHtml(url) + '"' : ' href="' + escapeHtml(url) + '" target="_blank" rel="noopener"')
+        + '>' + escapeHtml(label) + '</a>';
+      last = mdLink.lastIndex;
+    }
+    result += escapeHtml(raw.slice(last)).replace(/\n/g, "<br>");
+    return result;
+  }
+
+  function attachLinkHandlers(container) {
+    var btns = container.querySelectorAll("[data-calendly]");
+    btns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        showCalendlyEmbed(btn.getAttribute("data-calendly"), container);
+      });
+    });
+  }
+
+  function showCalendlyEmbed(url, bubbleEl) {
+    // Only embed once per bubble
+    if (bubbleEl.querySelector(".tj-calendly-wrap")) return;
+    var sep = url.indexOf("?") === -1 ? "?" : "&";
+    var src = url + sep + "embed_type=Inline&hide_gdpr_banner=1&primary_color=ff5c00";
+    var wrap = document.createElement("div");
+    wrap.className = "tj-calendly-wrap";
+    var iframe = document.createElement("iframe");
+    iframe.src = src;
+    iframe.title = "Book a discovery call with TrimJourney";
+    iframe.setAttribute("loading", "lazy");
+    wrap.appendChild(iframe);
+    bubbleEl.appendChild(wrap);
+    wrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
   // ── Message bubble ────────────────────────────────────────────────────────────
   function appendMessage(role, text) {
     var list = document.getElementById("tj-chat-messages");
@@ -472,7 +547,8 @@
     var row = el("div", { className: "tj-msg-row" + (isAI ? "" : " tj-user-row") });
     var avatarDiv = el("div", { className: "tj-row-avatar" }, [isAI ? "🤖" : "💬"]);
     var bubble = el("div", { className: "tj-msg " + (isAI ? "tj-ai" : "tj-user") });
-    bubble.innerHTML = escapeHtml(text).replace(/\n/g, "<br>");
+    bubble.innerHTML = isAI ? renderText(text) : escapeHtml(text).replace(/\n/g, "<br>");
+    if (isAI) attachLinkHandlers(bubble);
 
     if (isAI) {
       row.appendChild(avatarDiv);
@@ -580,7 +656,14 @@
       });
 
     function finishStream() {
-      if (aiText) messages.push({ role: "assistant", content: aiText });
+      if (aiText) {
+        messages.push({ role: "assistant", content: aiText });
+        // Re-render final bubble with proper link buttons
+        if (aiDiv) {
+          aiDiv.innerHTML = renderText(aiText);
+          attachLinkHandlers(aiDiv);
+        }
+      }
       hideTyping();
       isStreaming = false;
       document.getElementById("tj-chat-send").disabled = false;
