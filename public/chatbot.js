@@ -19,9 +19,9 @@
   // ── Styles ───────────────────────────────────────────────────────────────────
   var css = `
     @keyframes tj-pulse {
-      0% { box-shadow: 0 0 0 0 rgba(59,130,246,.45); }
-      70% { box-shadow: 0 0 0 14px rgba(59,130,246,0); }
-      100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+      0% { box-shadow: 0 0 0 0 rgba(255,92,0,.45); }
+      70% { box-shadow: 0 0 0 14px rgba(255,92,0,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,92,0,0); }
     }
     @keyframes tj-slideup {
       from { opacity:0; transform: translateY(18px) scale(.97); }
@@ -43,16 +43,16 @@
     #tj-chat-btn {
       position: fixed; bottom: 28px; right: 28px; z-index: 999999;
       width: 64px; height: 64px; border-radius: 50%; border: none;
-      background: linear-gradient(135deg, #0F2445 0%, #1E40AF 100%);
+      background: linear-gradient(135deg, #111 0%, #ff5c00 100%);
       cursor: pointer;
-      box-shadow: 0 6px 24px rgba(15,36,69,.45), 0 2px 8px rgba(0,0,0,.2);
+      box-shadow: 0 6px 24px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.2);
       display: flex; align-items: center; justify-content: center;
       transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s;
       animation: tj-pulse 2.8s ease-out 3s 3;
     }
     #tj-chat-btn:hover {
       transform: scale(1.1);
-      box-shadow: 0 10px 32px rgba(15,36,69,.55), 0 4px 12px rgba(0,0,0,.25);
+      box-shadow: 0 10px 32px rgba(0,0,0,.55), 0 4px 12px rgba(0,0,0,.25);
     }
     #tj-chat-btn.tj-open { animation: none; transform: scale(1); }
     #tj-chat-btn.tj-open svg.tj-icon-chat { display: none; }
@@ -73,7 +73,7 @@
     #tj-chat-label {
       position: absolute; right: 72px; bottom: 50%;
       transform: translateY(50%);
-      background: #0F2445; color: #fff;
+      background: #111111; color: #fff;
       padding: 6px 12px; border-radius: 20px;
       font: 600 12px/1 -apple-system,sans-serif;
       white-space: nowrap; pointer-events: none;
@@ -97,18 +97,18 @@
 
     /* ── Header ── */
     #tj-chat-header {
-      background: linear-gradient(135deg, #0F2445 0%, #1a3a6e 60%, #1E40AF 100%);
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 60%, #ff5c00 100%);
       padding: 16px 18px 14px; display: flex; align-items: center; gap: 12px;
       flex-shrink: 0; position: relative; overflow: hidden;
     }
     #tj-chat-header::before {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 80% 20%, rgba(99,179,237,.15) 0%, transparent 65%);
+      background: radial-gradient(ellipse at 80% 20%, rgba(255,92,0,.12) 0%, transparent 65%);
       pointer-events: none;
     }
     .tj-avatar-wrap {
       width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
-      background: linear-gradient(135deg,#3B82F6,#1D4ED8);
+      background: linear-gradient(135deg,#ff5c00,#cc4900);
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 0 0 2px rgba(255,255,255,.25);
       font-size: 22px;
@@ -137,7 +137,7 @@
 
     /* ── Brand strip ── */
     #tj-brand-strip {
-      background: linear-gradient(90deg,#0F2445,#1E3A6E);
+      background: linear-gradient(90deg,#111,#222);
       padding: 5px 18px; display: flex; align-items: center; justify-content: center;
       gap: 6px; flex-shrink: 0;
     }
@@ -147,7 +147,7 @@
     /* ── Messages ── */
     #tj-chat-messages {
       flex: 1; overflow-y: auto; padding: 18px 16px 12px;
-      background: #F1F5FB;
+      background: #F5F5F5;
       display: flex; flex-direction: column; gap: 12px;
     }
     #tj-chat-messages::-webkit-scrollbar { width: 4px; }
@@ -162,7 +162,7 @@
 
     .tj-row-avatar {
       width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
-      background: linear-gradient(135deg,#3B82F6,#1D4ED8);
+      background: linear-gradient(135deg,#ff5c00,#cc4900);
       display: flex; align-items: center; justify-content: center;
       font-size: 14px; box-shadow: 0 2px 6px rgba(0,0,0,.12);
     }
@@ -178,13 +178,13 @@
       background: #fff; color: #1a2332;
       padding: 11px 14px; border-radius: 4px 16px 16px 16px;
       box-shadow: 0 2px 8px rgba(0,0,0,.07);
-      border-left: 3px solid #3B82F6;
+      border-left: 3px solid #ff5c00;
     }
     .tj-msg.tj-user {
-      background: linear-gradient(135deg, #0F2445 0%, #1E40AF 100%);
+      background: linear-gradient(135deg, #111 0%, #ff5c00 100%);
       color: #fff; padding: 11px 14px;
       border-radius: 16px 4px 16px 16px;
-      box-shadow: 0 2px 8px rgba(15,36,69,.25);
+      box-shadow: 0 2px 8px rgba(255,92,0,.25);
     }
 
     /* ── Typing ── */
@@ -196,11 +196,11 @@
       background: #fff; padding: 12px 16px;
       border-radius: 4px 16px 16px 16px;
       box-shadow: 0 2px 8px rgba(0,0,0,.07);
-      border-left: 3px solid #3B82F6;
+      border-left: 3px solid #ff5c00;
       display: flex; gap: 5px; align-items: center;
     }
     .tj-typing-bubble span {
-      width: 7px; height: 7px; border-radius: 50%; background: #93C5FD;
+      width: 7px; height: 7px; border-radius: 50%; background: #ffb380;
       animation: tj-bounce 1s infinite ease-in-out;
     }
     .tj-typing-bubble span:nth-child(2) { animation-delay: .18s; }
@@ -209,18 +209,18 @@
     /* ── Quick suggestions ── */
     #tj-suggestions {
       display: flex; flex-wrap: wrap; gap: 7px; padding: 0 16px 14px;
-      background: #F1F5FB; flex-shrink: 0;
+      background: #F5F5F5; flex-shrink: 0;
     }
     .tj-suggestion {
-      background: #fff; border: 1.5px solid #BFDBFE;
-      color: #1E40AF; font-size: 12px; font-weight: 500;
+      background: #fff; border: 1.5px solid #ffd0b0;
+      color: #cc4900; font-size: 12px; font-weight: 500;
       padding: 6px 12px; border-radius: 20px; cursor: pointer;
       transition: all .15s; white-space: nowrap;
       font-family: inherit;
     }
     .tj-suggestion:hover {
-      background: #EFF6FF; border-color: #3B82F6;
-      box-shadow: 0 2px 8px rgba(59,130,246,.15);
+      background: #fff4ee; border-color: #ff5c00;
+      box-shadow: 0 2px 8px rgba(255,92,0,.15);
     }
 
     /* ── Input area ── */
@@ -234,19 +234,19 @@
       padding: 10px 13px; font-size: 14px; outline: none;
       resize: none; min-height: 40px; max-height: 100px; line-height: 1.45;
       font-family: inherit; transition: border-color .15s, box-shadow .15s;
-      background: #F8FAFF; color: #1e293b;
+      background: #FAFAFA; color: #1e293b;
     }
     #tj-chat-input:focus {
-      border-color: #3B82F6;
-      box-shadow: 0 0 0 3px rgba(59,130,246,.12);
+      border-color: #ff5c00;
+      box-shadow: 0 0 0 3px rgba(255,92,0,.12);
       background: #fff;
     }
     #tj-chat-input::placeholder { color: #94A3B8; }
     #tj-chat-send {
       width: 40px; height: 40px; border-radius: 12px; border: none; flex-shrink: 0;
-      background: linear-gradient(135deg, #0F2445, #1E40AF);
+      background: linear-gradient(135deg, #111, #ff5c00);
       cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: opacity .15s, transform .15s; box-shadow: 0 2px 8px rgba(30,64,175,.35);
+      transition: opacity .15s, transform .15s; box-shadow: 0 2px 8px rgba(255,92,0,.35);
     }
     #tj-chat-send:hover:not(:disabled) { opacity:.9; transform: scale(1.05); }
     #tj-chat-send:disabled { opacity: .4; cursor: not-allowed; transform: none; }
@@ -259,7 +259,7 @@
     }
     #tj-chat-footer span { color: #94A3B8; font-size: 11px; }
     #tj-chat-footer a { color: #64748B; text-decoration: none; font-weight: 600; }
-    #tj-chat-footer a:hover { color: #1E40AF; }
+    #tj-chat-footer a:hover { color: #ff5c00; }
   `;
 
   // ── DOM helper ───────────────────────────────────────────────────────────────
