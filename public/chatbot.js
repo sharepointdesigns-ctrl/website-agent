@@ -8,12 +8,12 @@
   var API_URL = (cfg.apiUrl || "").replace(/\/$/, "") + "/api/chat";
 
   var OPEN_MESSAGE =
-    "Hi! I'm Alex, TrimJourney's AI consultant 👋 I help businesses find the right AI automation opportunities — no jargon, no pressure.\n\nWhat's a process in your business that feels slow or repetitive?";
+    "Hi! I'm Alex, TrimJourney's AI consultant 👋 I help businesses find exactly what to automate — and what not to. No jargon, no sales pitch.\n\nWhat's a process in your business that feels slow or repetitive?";
 
   var SUGGESTIONS = [
     "What can AI automate for my business?",
-    "How does TrimJourney work?",
-    "What's a Microsoft Copilot Agent?",
+    "What happens after the $100 call?",
+    "Who is TrimJourney best for?",
   ];
 
   // ── Styles ───────────────────────────────────────────────────────────────────
