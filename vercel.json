@@ -1,0 +1,19 @@
+{
+  "functions": {
+    "api/chat.js": {
+      "maxDuration": 30
+    }
+  },
+  "headers": [
+    {
+      "source": "/chatbot.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" },
+        { "key": "Content-Type", "value": "application/javascript" }
+      ]
+    }
+  ],
+  "rewrites": [
+    { "source": "/chatbot.js", "destination": "/public/chatbot.js" }
+  ]
+}

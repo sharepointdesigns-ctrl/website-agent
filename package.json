@@ -1,0 +1,11 @@
+{
+  "name": "trimjourney-chatbot",
+  "version": "1.0.0",
+  "description": "Claude-powered sales chatbot for TrimJourney",
+  "engines": {
+    "node": ">=20.x"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.40.0"
+  }
+}
