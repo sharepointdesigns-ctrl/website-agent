@@ -23,13 +23,17 @@
       70% { box-shadow: 0 0 0 14px rgba(255,92,0,0); }
       100% { box-shadow: 0 0 0 0 rgba(255,92,0,0); }
     }
-    @keyframes tj-slideup {
-      from { opacity:0; transform: translateY(18px) scale(.97); }
-      to   { opacity:1; transform: translateY(0)    scale(1);   }
+    @keyframes tj-modal-in {
+      from { opacity:0; transform: translate(-50%,-50%) scale(.96); }
+      to   { opacity:1; transform: translate(-50%,-50%) scale(1);   }
+    }
+    @keyframes tj-sheet-in {
+      from { opacity:0; transform: translateY(100%); }
+      to   { opacity:1; transform: translateY(0);    }
     }
     @keyframes tj-fadein {
-      from { opacity:0; transform: translateY(6px); }
-      to   { opacity:1; transform: translateY(0); }
+      from { opacity:0; }
+      to   { opacity:1; }
     }
     @keyframes tj-bounce {
       0%,80%,100% { transform: scale(.6); opacity:.4; }
@@ -83,16 +87,38 @@
     #tj-chat-btn:hover #tj-chat-label,
     #tj-chat-btn:focus #tj-chat-label { opacity: 1; }
 
+    #tj-overlay {
+      position: fixed; inset: 0; z-index: 999997;
+      background: rgba(0,0,0,.6);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      display: none;
+      animation: tj-fadein .22s ease both;
+    }
+
     #tj-chat-window {
-      position: fixed; bottom: 106px; right: 28px; z-index: 999998;
-      width: 390px; max-width: calc(100vw - 40px);
-      height: 560px; max-height: calc(100vh - 130px);
+      position: fixed; z-index: 999998;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(740px, 92vw);
+      height: min(88vh, 860px);
       border-radius: 20px; overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,.18), 0 4px 20px rgba(0,0,0,.12);
+      box-shadow: 0 32px 80px rgba(0,0,0,.28), 0 8px 32px rgba(0,0,0,.18);
       display: none; flex-direction: column;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-size: 14px; background: #fff;
-      animation: tj-slideup .3s cubic-bezier(.22,1,.36,1) both;
+      animation: tj-modal-in .28s cubic-bezier(.22,1,.36,1) both;
+    }
+    @media (max-width: 639px) {
+      #tj-chat-window {
+        top: 0; left: 0;
+        transform: none;
+        width: 100%; height: 100vh; height: 100dvh;
+        border-radius: 0;
+        animation: tj-sheet-in .3s cubic-bezier(.22,1,.36,1) both;
+      }
+    }
+    @media (min-width: 640px) {
+      .tj-msg { max-width: 68%; }
     }
 
     /* ── Header ── */
@@ -295,9 +321,9 @@
       // Chat icon
       '<svg class="tj-icon-chat" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">'
       + '<path d="M6 4h20a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H10l-6 6V6a2 2 0 0 1 2-2z" fill="white" opacity=".95"/>'
-      + '<circle cx="11" cy="12" r="1.8" fill="#1E40AF"/>'
-      + '<circle cx="16" cy="12" r="1.8" fill="#1E40AF"/>'
-      + '<circle cx="21" cy="12" r="1.8" fill="#1E40AF"/>'
+      + '<circle cx="11" cy="12" r="1.8" fill="#ff5c00"/>'
+      + '<circle cx="16" cy="12" r="1.8" fill="#ff5c00"/>'
+      + '<circle cx="21" cy="12" r="1.8" fill="#ff5c00"/>'
       + '</svg>',
       // Close icon
       '<svg class="tj-icon-close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>',
@@ -370,8 +396,18 @@
     win.appendChild(form);
     win.appendChild(footer);
 
-    document.body.appendChild(btn);
+    // ── Backdrop overlay ─────────────────────────────────────────────────────
+    var overlay = el("div", { id: "tj-overlay" });
+    overlay.addEventListener("click", toggleChat);
+
+    document.body.appendChild(overlay);
     document.body.appendChild(win);
+    document.body.appendChild(btn);
+
+    // Escape key to close
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && isOpen) toggleChat();
+    });
 
     setTimeout(function () { if (!isOpen) badge.style.display = "flex"; }, 4000);
   }
@@ -380,15 +416,20 @@
   function toggleChat() {
     isOpen = !isOpen;
     var win = document.getElementById("tj-chat-window");
+    var overlay = document.getElementById("tj-overlay");
     var btn = document.getElementById("tj-chat-btn");
     var badge = document.getElementById("tj-chat-badge");
 
     if (isOpen) {
+      overlay.style.display = "block";
       win.style.display = "flex";
-      // Re-trigger animation
+      // Re-trigger entrance animation
       win.style.animation = "none";
+      overlay.style.animation = "none";
       win.offsetHeight; // reflow
       win.style.animation = "";
+      overlay.style.animation = "";
+      document.body.style.overflow = "hidden";
       btn.classList.add("tj-open");
       badge.style.display = "none";
 
@@ -401,6 +442,8 @@
       }
     } else {
       win.style.display = "none";
+      overlay.style.display = "none";
+      document.body.style.overflow = "";
       btn.classList.remove("tj-open");
     }
   }
